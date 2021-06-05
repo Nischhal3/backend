@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,KACE,oBAAa,CAAb,YAAa,CACb,8BAAuB,CAAvB,sBAAuB,CACvB,aACF,CAEA,OACE,UACF","file":"main.4518d2bf.chunk.css","sourcesContent":[".App{\n  display: flex;\n  justify-content: center;\n  color: blueviolet;\n}\n\nbutton{\n  margin: 5px;\n}"]}
