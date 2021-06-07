@@ -31,10 +31,38 @@ morgan.token('custom', (req, res) => {
 
 app.use(morgan(':custom :status - :response-time ms :body'));
 
-
+//Fetching data from mongodb database
 app.get('/api/persons', (require, response) => {
     Person.find({}).then(persons => {
         response.json(persons);
+    })
+})
+
+//Adding person to the database
+app.post('/api/persons', (request, response) => {
+    const body = request.body;
+    console.log(body);
+
+    if (body.name === "" || body.number === "") {
+        return response.status(400).json({
+            error: 'Content missing!'
+        })
+    }
+
+    const person = new Person({
+        name: body.name,
+        number: body.number,
+    })
+
+    person.save().then(savedPerson => {
+        response.json(savedPerson);
+    })
+})
+
+//Get perosn by id
+app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
+        response.json(person);
     })
 })
 
