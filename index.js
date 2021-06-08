@@ -16,7 +16,9 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message);
 
     if (error.name == 'CastError') {
-        response.status(500).send({ error: 'malformatted id' })
+        return response.status(500).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
     next(error);
 }
@@ -49,14 +51,18 @@ app.get('/api/persons', (require, response) => {
 })
 
 //Adding person to the database
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
-    console.log(body);
+    //console.log(body);
 
-    if (body.name === "" || body.number === "") {
+    if (!body.name) {
         return response.status(400).json({
-            error: 'Content missing!'
-        })
+            error: "name missing",
+        });
+    } else if (!body.number) {
+        return response.status(400).json({
+            error: " number missing",
+        });
     }
 
     const person = new Person({
@@ -64,9 +70,13 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
     })
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson);
-    })
+    person
+        .save()
+        .then((savedPerson) => savedPerson.toJSON())
+        .then((savedAndFormattedPerson) => {
+            response.json(savedAndFormattedPerson);
+        })
+        .catch((error) => next(error));
 })
 
 //Get perosn by id
