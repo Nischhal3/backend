@@ -81,6 +81,14 @@ app.get('/api/persons/:id', (request, response, next) => {
         }).catch(error => next(error))
 })
 
+//Delete person by id
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end();
+        }).catch(error => next(error));
+})
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
