@@ -1,14 +1,13 @@
 const personsRouter = require('express').Router();
 const Person = require('../models/person')
 
-personsRouter.get('/', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons.map(person => person.toJSON()));
-    })
+personsRouter.get('/', async (request, response) => {
+    const persons = await Person.find({})
+    response.json(persons.map(person => person.toJSON()));
 })
 
 //Adding person to the database
-personsRouter.post('/', (request, response, next) => {
+personsRouter.post('/', async (request, response, next) => {
     const body = request.body;
     //console.log(body);
     if (!body.name) {
@@ -26,13 +25,12 @@ personsRouter.post('/', (request, response, next) => {
         number: body.number,
     })
 
-    person
-        .save()
-        .then((savedPerson) => savedPerson.toJSON())
-        .then((savedAndFormattedPerson) => {
-            response.json(savedAndFormattedPerson);
-        })
-        .catch((error) => next(error));
+    try {
+        const savedPerson = await person.save();
+        response.json(savedPerson.toJSON);
+    } catch (exception) {
+        next(exception)
+    }
 })
 
 //Get perosn by id

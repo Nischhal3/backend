@@ -25,3 +25,7 @@ Heroku guide:
 ->git commit -m "your commit"
 ->git push heroku master
 add .gitignore file and add node_modules inside it
+
+Testing
+npm test -- tests/person_api.test.js //performs test with the file name
+npm test -- -t 'a specific person is within the returned notes'  //performs test by parameter name
